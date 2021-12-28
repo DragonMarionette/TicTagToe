@@ -1,11 +1,12 @@
-from time import sleep
 from random import randint
+from time import sleep
 
 import AI
-import Recur
-from Board import GameBoard, X, O
-from Player import Player, Human
+from Board import GameBoard
 import dialog
+from Player import Player, Human
+import Recur
+import Token
 
 
 class Game:
@@ -53,14 +54,14 @@ class Game:
         gametype, _ = dialog.from_intdict(gametype_options, prompt='\nWho will be playing?')
 
         if gametype == 1:
-            p1 = Game.establish_human(X, 'first')
-            p2 = Game.establish_human(O, 'second')
+            p1 = Game.establish_human(Token.X, 'first')
+            p2 = Game.establish_human(Token.O, 'second')
         elif gametype == 2:
-            p1 = Game.establish_human(X, 'human')
-            p2 = Game.establish_ai(O, 'AI')
+            p1 = Game.establish_human(Token.X, 'human')
+            p2 = Game.establish_ai(Token.O, 'AI')
         else:  # game_type == 3
-            p1 = Game.establish_ai(X, 'first')
-            p2 = Game.establish_ai(O, 'second')
+            p1 = Game.establish_ai(Token.X, 'first')
+            p2 = Game.establish_ai(Token.O, 'second')
 
         order_options = {
             1: p1.name,

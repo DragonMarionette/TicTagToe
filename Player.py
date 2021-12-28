@@ -1,9 +1,10 @@
-from Board import GameBoard, colors
+from Board import GameBoard
+import Token
 
 
 class Player:
     def __init__(self, name, char):
-        self.name = colors[char] + name + '\033[0m'
+        self.name = Token.colors[char] + name + '\033[0m'
         self._char = char
 
     @property

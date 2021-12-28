@@ -1,7 +1,8 @@
-from Board import GameBoard
+from copy import deepcopy
 from itertools import permutations
 import numpy as np
-from copy import deepcopy
+
+from Board import GameBoard
 
 
 # Gives the standardized scramble of a GameBoard b

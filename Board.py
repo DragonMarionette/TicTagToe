@@ -1,25 +1,10 @@
 import numpy as np
 import re
 
+import Token
 
-# TODO: change X, O, and EMPTY to use enum or something
-X = 1
-O = 0
-EMPTY = -1
 
-valid_players = (X, O)
-
-chars = {
-    EMPTY: '\u00B7',
-    X: 'X',
-    O: 'O'
-}
-
-colors = {
-    EMPTY: '\033[37m',
-    X: '\033[34m',
-    O: '\033[33m'
-}
+valid_players = (Token.X, Token.O)
 
 
 class Board:
@@ -30,7 +15,7 @@ class Board:
         else:
             assert size <= 9
             self._n = size
-            self._grid = np.full((size, size), EMPTY, dtype=np.int8)
+            self._grid = np.full((size, size), Token.EMPTY, dtype=np.int8)
 
     # Dimension of the grid
     @property
@@ -58,7 +43,7 @@ class Board:
         if not isinstance(player, int):
             raise TypeError(f'Expected int, instead found {type(player)}')
 
-        if self._grid[y, x] == EMPTY:
+        if self._grid[y, x] == Token.EMPTY:
             self._grid[y, x] = player
             return True
         else:
@@ -79,7 +64,7 @@ class Board:
 
     # Reset the board to empty
     def clear(self):
-        self._grid.fill(EMPTY)
+        self._grid.fill(Token.EMPTY)
 
     # # Convert to dict representation of a graph
     # def as_graph(self):
@@ -105,22 +90,22 @@ class Board:
     # Replace all X with O and vice versa
     def invert(self):  # TODO: test
         transformation = {
-            X: O,
-            O: X,
-            EMPTY: EMPTY
+            Token.X: Token.O,
+            Token.O: Token.X,
+            Token.EMPTY: Token.EMPTY
         }
         with np.nditer(self._grid, op_flags=['readwrite']) as it:
             for space in it:
-                space[...] = transformation[X]
+                space[...] = transformation[Token.X]
 
 
 class GameBoard(Board):
 
-    # Return printable character at space, as would be visible during board printing
+    # Return printable character at coordinate, as would be visible during board printing
     def char_at(self, coordinate) -> str:
         x, y = coordinate
         c = self.grid[y, x]
-        return colors[c] + chars[c] + '\033[0m'
+        return Token.colors[c] + Token.symbols[c] + '\033[0m'
 
     # From input of the form 'A1' or '1A', return (x, y) indices on grid. Not case sensitive
     def coord(self, space: str):
@@ -146,11 +131,11 @@ class GameBoard(Board):
     # Return True if `coordinate` on grid has a player piece in it, else False
     def occupied(self, coordinate):
         x, y = coordinate
-        return self.grid[y, x] != EMPTY
+        return self.grid[y, x] != Token.EMPTY
 
     # Return True if board has no empty spaces
     def full(self):
-        return not np.any(self.grid == EMPTY)
+        return not np.any(self.grid == Token.EMPTY)
 
     # Print board to console
     def print(self):

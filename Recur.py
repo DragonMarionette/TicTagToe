@@ -1,8 +1,10 @@
+from copy import deepcopy
 import numpy as np
 
-from AI import *
-from Board import EMPTY
+from AI import AI, choice, legal_spaces
+from Board import GameBoard
 import Standardize
+import Token
 
 # Done: optimizing redundant branches. Used dict
 # Done: optimizing equivalent branches. Used dict
@@ -49,7 +51,7 @@ class Recursive(AI):
                 else:
                     next_down = self.helper(not c, hypo_board)
                     space_ratings[space] = -np.amax(next_down)
-                hypo_board.replace(EMPTY, space)
+                hypo_board.replace(Token.EMPTY, space)
 
             self._board_states[state_id] = space_ratings
 

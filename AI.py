@@ -1,7 +1,8 @@
-from Player import Player
-from Board import GameBoard
-from random import choice
 from copy import deepcopy
+from random import choice
+
+from Board import GameBoard
+from Player import Player
 
 
 def legal_spaces(b: GameBoard):
