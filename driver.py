@@ -1,7 +1,6 @@
 from Game import Game
 
-player1, player2, board_size = Game.setup()
-g = Game(player1, player2, board_size, turn_pause=0)
+g = Game.from_setup()
 print('\n')
 
 replay = True
