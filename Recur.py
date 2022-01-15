@@ -1,13 +1,15 @@
 from copy import deepcopy
 import numpy as np
+from random import choice
 
-from AI import AI, choice, legal_spaces
+from AI import AI, legal_spaces
 from Board import GameBoard
 import Standardize
 import Token
 
 # Done: optimizing redundant branches. Used dict
 # Done: optimizing equivalent branches. Used dict
+# TODO: instead of constructing hypo_board, maybe modify in place? Time and compare
 # TODO: allow termination at lower depth using imperfect evaluation function
 # TODO: remember previous calculations
 # TODO: alpha-beta pruning
