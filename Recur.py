@@ -9,7 +9,7 @@ import Token
 
 # Done: optimizing redundant branches. Used dict
 # Done: optimizing equivalent branches. Used dict
-# TODO: instead of constructing hypo_board, maybe modify in place? Time and compare
+# Done: instead of constructing hypo_board, modified sub_board in place. Did not improve performance; reverted
 # TODO: allow termination at lower depth using imperfect evaluation function
 # TODO: remember previous calculations
 # TODO: alpha-beta pruning
@@ -23,16 +23,20 @@ class Recursive(AI):
         super().__init__(Recursive.character_name, char)
         self._board_states = dict()
 
-    def choose_space(self, b: GameBoard):
+    def choose_space(self, b: GameBoard, verbose: bool = False):
         space_ratings = self.helper(self.char, b)
-        # print(space_ratings)  # for debugging purposes
+        if verbose:
+            print(f"space_ratings =\n{space_ratings.transpose()}")  # for debugging purposes
         best_option = np.amax(space_ratings)
         cols, rows = np.where(space_ratings == best_option)  # This is the correct row/col order, I checked
         viable_spaces = list(zip(cols, rows))
 
-        selection = choice(viable_spaces)
-
-        return selection
+        move = choice(viable_spaces)
+        if verbose:
+            print(f"{self.name} went in "
+                  f"{chr(move[0] + ord('A'))}"
+                  f"{move[1]+1}")  # for debugging purposes
+        return move
 
     def helper(self, c: int, in_board: GameBoard):
         sub_board, permutation, state_id = Standardize.scramble(in_board, naive=False)
