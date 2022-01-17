@@ -31,7 +31,7 @@ class Board:
         return self.grid[item]
 
     def __hash__(self):
-        return hash(tuple(self._grid.flatten().tolist()))
+        return hash(tuple(self._grid.flatten()))
 
     # Attempt to place `player` piece at `coord`. Return False if space was occupied and abort
     def place(self, player: int, coord) -> bool:
@@ -66,11 +66,6 @@ class Board:
     def clear(self):
         self._grid.fill(Token.EMPTY)
 
-    # # Convert to dict representation of a graph
-    # def as_graph(self):
-    #     graph_dict = dict()
-    #
-
     # Return true if `player` has won, else False
     def check(self, player: int) -> bool:
         def check_helper(g: np.ndarray):
@@ -80,7 +75,6 @@ class Board:
                 if g[0, i] == player:  # if we've found the correct letter in the 0th column of this row
                     smaller = np.delete(g[1:, :], i, axis=1)  # construct smaller array without that row or column
                     if check_helper(smaller):
-                        # print(smaller)  # for debugging purposes
                         return True
             return False
 
@@ -88,15 +82,15 @@ class Board:
         return check_helper(self.grid)
 
     # Replace all X with O and vice versa
-    def invert(self):  # TODO: test
-        transformation = {
-            Token.X: Token.O,
-            Token.O: Token.X,
-            Token.EMPTY: Token.EMPTY
-        }
-        with np.nditer(self._grid, op_flags=['readwrite']) as it:
-            for space in it:
-                space[...] = transformation[Token.X]
+    # def invert(self):  # TODO: test
+    #     transformation = {
+    #         Token.X: Token.O,
+    #         Token.O: Token.X,
+    #         Token.EMPTY: Token.EMPTY
+    #     }
+    #     with np.nditer(self._grid, op_flags=['readwrite']) as it:
+    #         for space in it:
+    #             space[...] = transformation[Token.X]
 
 
 class GameBoard(Board):
@@ -136,6 +130,14 @@ class GameBoard(Board):
     # Return True if board has no empty spaces
     def full(self):
         return not np.any(self.grid == Token.EMPTY)
+
+    # Return number of empty spaces
+    def empty(self):
+        return len(self.grid[self.grid == Token.EMPTY])
+
+    # Return number of nonempty spaces
+    def nonempty(self):
+        return len(self.grid[self.grid != Token.EMPTY])
 
     # Print board to console
     def print(self):
