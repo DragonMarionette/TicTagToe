@@ -5,7 +5,7 @@ import AI
 from Board import GameBoard
 import dialog
 from Player import Player, Human
-import Recur
+from Recur import Recursive
 import Token
 
 
@@ -93,7 +93,7 @@ class Game:
         ai_options = {
             1: AI.Random(c),
             2: AI.OneAhead(c),
-            3: Recur.Recursive(c)
+            3: Recursive(c)
         }
         _, ai_selection = dialog.from_intdict(ai_options, f'\nChoose the {adjective} player')
         return ai_selection
