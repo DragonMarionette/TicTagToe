@@ -22,17 +22,17 @@ def scramble_naive(b: GameBoard):
     representation = np.concatenate(to_concat)  # n-by-n-by-3 grid representing indices and content of the spaces
 
     all_equivalents = []
-    row_perm = permutations(range(b.n))
-    for r in row_perm:
-        row_transposed = representation[:, r, :]
+    row_perms = permutations(range(b.n))
+    for r in row_perms:
+        row_permuted = representation[:, r, :]
 
-        col_perm = permutations(range(b.n))
-        for c in col_perm:
-            all_equivalents.append(row_transposed[:, :, c])
+        col_perms = permutations(range(b.n))
+        for c in col_perms:
+            all_equivalents.append(row_permuted[:, :, c])
     transposed = [np.transpose(g, axes=(0, 2, 1)) for g in all_equivalents]
     all_equivalents += transposed
 
-    out_vals = sorted(all_equivalents, key=lambda x: x[2].flatten().tolist())[0]
+    out_vals = min(all_equivalents, key=lambda x: x[2].tolist())
     board_out = GameBoard(0, grid=out_vals[2])
 
     return board_out, out_vals[0:2, :, :], hash(board_out)
