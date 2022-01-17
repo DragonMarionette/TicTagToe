@@ -10,7 +10,7 @@ import Token
 
 
 class Game:
-    def __init__(self, p1: Player, p2: Player, board_size: int, turn_pause: int = 2):
+    def __init__(self, p1: Player, p2: Player, board_size: int, turn_pause: int = 0):
         self.players = p1, p2
         self.board = GameBoard(board_size)
         self.turn_pause = turn_pause
@@ -95,5 +95,5 @@ class Game:
             2: AI.OneAhead(c),
             3: Recur.Recursive(c)
         }
-        _, ai_choice = dialog.from_intdict(ai_options, f'\nChoose the {adjective} player')
-        return ai_choice
+        _, ai_selection = dialog.from_intdict(ai_options, f'\nChoose the {adjective} player')
+        return ai_selection
