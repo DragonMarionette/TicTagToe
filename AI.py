@@ -5,13 +5,6 @@ from Board import GameBoard
 from Player import Player
 
 
-def legal_spaces(b: GameBoard):
-    for i in range(b.n):
-        for j in range(b.n):
-            if not b.occupied((i, j)):
-                yield i, j
-
-
 # Template class for any AI strategy
 class AI(Player):
     character_name = 'Generic AI'
@@ -27,7 +20,7 @@ class AI(Player):
 
     @staticmethod
     def random(b: GameBoard):
-        return choice(list(legal_spaces(b)))
+        return choice(b.legal_spaces())
 
 
 # Strategy: move in a random legal spot
@@ -51,7 +44,7 @@ class OneAhead(AI):
     def choose_space(self, b: GameBoard):
         can_win = False
         viable_spaces = []
-        for space in legal_spaces(b):
+        for space in b.legal_spaces():
             hypothetical_board = deepcopy(b)
 
             hypothetical_board.place(self.char, space)

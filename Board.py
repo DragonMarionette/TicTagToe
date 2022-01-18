@@ -133,11 +133,17 @@ class GameBoard(Board):
 
     # Return number of empty spaces
     def empty(self):
-        return len(self.grid[self.grid == Token.EMPTY])
+        return np.count_nonzero(self.grid == Token.EMPTY)
+        # return len(self.grid[self.grid == Token.EMPTY])
 
     # Return number of nonempty spaces
     def nonempty(self):
-        return len(self.grid[self.grid != Token.EMPTY])
+        return np.count_nonzero(self.grid != Token.EMPTY)
+        # return len(self.grid[self.grid != Token.EMPTY])
+
+    def legal_spaces(self):
+        rows, cols = np.where(self.grid == Token.EMPTY)
+        return list(zip(cols, rows))  # rows, cols are switched here because Board indexes opposite np.ndarray
 
     # Print board to console
     def print(self):
