@@ -1,23 +1,20 @@
-from copy import deepcopy
 import numpy as np
 from random import choice
 
-from AI import AI, legal_spaces
+from AI import AI
 from Board import GameBoard
 import Standardize
 import Token
 
-# Done: optimizing redundant branches. Used dict
-# Done: optimizing equivalent branches. Used dict
-# Done: instead of constructing hypo_board, modified sub_board in place. Did not improve performance; reverted
+# Done: instead of constructing hypo_board, modify sub_board in place. Negligible speedup but ~halves memory use
+# Done: aggressive pruning such that the first winning strategy found is used
 # TODO: allow termination at lower depth using imperfect evaluation function
 # TODO: remember previous calculations
-# TODO: alpha-beta pruning
 # TODO: choose *better* moves that give opponent more chance to slip up
 
 
 class Recursive(AI):
-    character_name = 'The Oracle'
+    character_name = 'The Lazy Oracle'
 
     def __init__(self, char):
         super().__init__(Recursive.character_name, char)
@@ -47,17 +44,31 @@ class Recursive(AI):
         else:
             space_ratings = np.full(sub_board.grid.shape, -2, dtype=np.short)  # spaces default to illegal
 
-            hypo_board = deepcopy(sub_board)
-            for space in legal_spaces(sub_board):  # for each legal space:
-                hypo_board.place(c, space)
-                if hypo_board.check(c):  # if c wins at space, space's rating is 1
-                    space_ratings[space] = 1
-                elif hypo_board.full():  # if it's a tie, space's rating is 0
-                    space_ratings[space] = 0
-                else:
-                    next_down = self.helper(not c, hypo_board)
-                    space_ratings[space] = -np.amax(next_down)
-                hypo_board.replace(Token.EMPTY, space)
+            if sub_board.empty() == 1:  # if last move of game
+                space = sub_board.legal_spaces()[0]  # always (0, 0) with current Standardize.scramble()
+                sub_board.place(c, space)
+                space_ratings[space] = int(sub_board.check(c))  # 1 if c wins, 0 if it's a tie
+                sub_board.replace(Token.EMPTY, space)
+
+            else:  # not last move of game
+                break_early = False
+                for space in sub_board.legal_spaces():  # for each legal space:
+                    sub_board.place(c, space)
+                    if sub_board.check(c):  # if c wins at space, space's rating is 1
+                        space_ratings[space] = 1
+                        break_early = True  # no need to check recursively if possible to win this turn
+                        sub_board.replace(Token.EMPTY, space)
+                        break
+                    sub_board.replace(Token.EMPTY, space)
+
+                if not break_early:  # if no immediate wins found, minimax
+                    for space in sub_board.legal_spaces():  # for each legal space:
+                        sub_board.place(c, space)
+                        next_down = self.helper(not c, sub_board)
+                        space_ratings[space] = -np.amax(next_down)
+                        sub_board.replace(Token.EMPTY, space)
+                        if space_ratings[space] == 1:
+                            break
 
             self._board_states[state_id] = space_ratings
 
